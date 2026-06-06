@@ -1410,24 +1410,19 @@ function askDeleteUser(id){
   document.getElementById('modal-confirm').classList.add('open');
 }
 
-async function deleteUser(){
- async function salvarOcorrencia(){
+async function salvarOcorrencia(){
   if (!window._occEditId) { closeModal('modal-occ'); return; }
-  
   const selects = document.querySelectorAll('#modal-occ .form-group select');
   const obsEl = document.querySelector('#modal-occ textarea');
-  
   const STATUS_VAL = {
     'Em análise': 'analise',
     'Em execução': 'execucao',
     'Resolvida': 'resolvida',
     'Rejeitada': 'rejeitada'
   };
-  
   const dados = {};
   if (selects[0]) dados.status = STATUS_VAL[selects[0].value] || selects[0].value;
   if (obsEl && obsEl.value) dados.observacao_interna = obsEl.value;
-
   try {
     await api.patch(`/ocorrencias/${window._occEditId}`, dados);
     closeModal('modal-occ');
@@ -1436,6 +1431,22 @@ async function deleteUser(){
     carregarDashboard();
   } catch (err) {
     showToast('Erro ao salvar: ' + err.message, 'erro');
+  }
+}
+
+async function deleteUser(){
+  if (editingUserId) pendingDeleteId = editingUserId;
+  if (!pendingDeleteId) return;
+  try {
+    await api.del(`/usuarios/${pendingDeleteId}`);
+    showToast('Usuário desativado.', 'sucesso');
+    pendingDeleteId = null;
+    editingUserId = null;
+    closeModal('modal-user');
+    closeModal('modal-confirm');
+    carregarUsuarios();
+  } catch (err) {
+    showToast('Erro ao desativar: ' + err.message, 'erro');
   }
 }
 
