@@ -670,10 +670,10 @@ tr:hover td{background:#fafcff}
       <button class="modal-close" onclick="closeModal('modal-occ')">×</button>
     </div>
     <div class="modal-body">
-      <div class="photo-box">
-        <span class="material-icons">photo_camera</span>
-        <p>Foto enviada pelo cidadão</p>
-      </div>
+      <div id="modal-occ-foto" class="photo-box">
+  <span class="material-icons">photo_camera</span>
+  <p>Foto enviada pelo cidadão</p>
+</div>
       <div id="modal-occ-details">
         <div class="detail-row"><div class="detail-label">ID</div><div class="detail-val">#0247</div></div>
         <div class="detail-row"><div class="detail-label">Categoria</div><div class="detail-val"><span class="cat cat-buraco">Buraco na rua</span></div></div>
@@ -1137,8 +1137,13 @@ function openOccModal(id, mode){
   const o = store.ocorrencias.find(x => x.id === id);
 if (!o) return;
 window._occEditId = id;
-  const title = `Detalhes da Ocorrência ${o.protocolo}`;
-  document.getElementById('modal-occ-title').textContent = title;
+  // Atualizar foto do modal
+const fotoBox = document.getElementById('modal-occ-foto');
+if (o.fotos_urls && o.fotos_urls.length > 0) {
+  fotoBox.innerHTML = `<img src="${o.fotos_urls[0]}" style="width:100%;max-height:220px;object-fit:cover;border-radius:8px;"/>`;
+} else {
+  fotoBox.innerHTML = `<span class="material-icons" style="font-size:40px;color:#aaa">image_not_supported</span><p style="color:#aaa;margin-top:8px">Sem fotos</p>`;
+}
 
   const data = o.criado_em ? new Date(o.criado_em).toLocaleString('pt-BR') : '—';
   document.getElementById('modal-occ-details').innerHTML = `
@@ -1153,7 +1158,6 @@ window._occEditId = id;
     <div class="detail-row"><div class="detail-label">Status</div><div class="detail-val"><span class="badge ${STATUS_CLASS[o.status]}">${STATUS_LABEL[o.status]}</span></div></div>
     <div class="detail-row"><div class="detail-label">Urgência</div><div class="detail-val">${URGENCIA_LABEL[o.urgencia]} (${o.contador_apoios || 0} apoios)</div></div>
     <div class="detail-row"><div class="detail-label">Descrição</div><div class="detail-val">${o.descricao || '—'}</div></div>
-    ${o.fotos_urls && o.fotos_urls.length ? `<div class="detail-row"><div class="detail-label">Fotos</div><div class="detail-val">${o.fotos_urls.map(u=>`<img src="${u}" style="max-width:120px;border-radius:6px;margin:3px"/>`).join('')}</div></div>` : ''}
   `;
   document.getElementById('modal-occ').classList.add('open');
 }
