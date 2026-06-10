@@ -351,9 +351,9 @@ tr:hover td{background:#fafcff}
 
       <!-- ─────── DASHBOARD ─────── -->
       <div id="pg-dashboard" class="page active">
-        <div class="notif-strip">
+        <div id="notif-strip-dash" class="notif-strip" style="display:none">
           <span class="material-icons">campaign</span>
-          <p>3 novas ocorrências recebidas nas últimas 2 horas aguardando análise.</p>
+          <p id="notif-strip-msg"></p>
         </div>
         <div class="kpi-grid">
           <div class="kpi-card c-azul">
@@ -386,51 +386,28 @@ tr:hover td{background:#fafcff}
           <div class="card">
             <div class="card-header">
               <h3><span class="material-icons">list_alt</span> Últimas Ocorrências</h3>
-              <button class="btn btn-ghost btn-sm" onclick="goPage('ocorrencias',document.querySelector('.nav-item:nth-of-type(2)'))">
+              <button class="btn btn-ghost btn-sm" onclick="goPage('ocorrencias',document.getElementById('nav-ocorrencias'))">
                 Ver todas <span class="material-icons">arrow_forward</span>
               </button>
             </div>
             <table>
-              <thead><tr><th>ID</th><th>Categoria</th><th>Status</th><th>Bairro</th><th></th></tr></thead>
-              <tbody>
-                <tr><td><strong>#0247</strong></td><td><span class="cat cat-buraco">Buraco</span></td><td><span class="badge b-analise">Em análise</span></td><td>Centro</td><td><button class="action-btn" onclick="openOccModal('#0247','view')" title="Ver detalhes"><span class="material-icons">visibility</span></button></td></tr>
-                <tr><td><strong>#0246</strong></td><td><span class="cat cat-poste">Poste</span></td><td><span class="badge b-execucao">Em execução</span></td><td>B. Grande</td><td><button class="action-btn" onclick="openOccModal('#0246','view')"><span class="material-icons">visibility</span></button></td></tr>
-                <tr><td><strong>#0245</strong></td><td><span class="cat cat-lixo">Lixo</span></td><td><span class="badge b-resolvido">Resolvida</span></td><td>F. Damião</td><td><button class="action-btn" onclick="openOccModal('#0245','view')"><span class="material-icons">visibility</span></button></td></tr>
-                <tr><td><strong>#0244</strong></td><td><span class="cat cat-denuncia">Denúncia</span></td><td><span class="badge b-analise">Em análise</span></td><td>P. Anhanguera</td><td><button class="action-btn" onclick="openOccModal('#0244','view')"><span class="material-icons">visibility</span></button></td></tr>
-                <tr><td><strong>#0243</strong></td><td><span class="cat cat-suplv">SUPLV</span></td><td><span class="badge b-execucao">Em execução</span></td><td>Bacuri</td><td><button class="action-btn" onclick="openOccModal('#0243','view')"><span class="material-icons">visibility</span></button></td></tr>
+              <thead><tr><th>Protocolo</th><th>Categoria</th><th>Status</th><th>Bairro</th><th></th></tr></thead>
+              <tbody id="dash-ultimas-tbody">
+                <tr><td colspan="5" style="text-align:center;color:#bbb;padding:20px">Carregando...</td></tr>
               </tbody>
             </table>
           </div>
 
           <div class="card">
             <div class="card-header"><h3><span class="material-icons">bar_chart</span> Ocorrências por Categoria</h3></div>
-            <div class="bar-section">
-              <div class="bar-row"><div class="bar-label">Buraco na rua</div><div class="bar-track"><div class="bar-fill" style="width:78%;background:var(--azul)">78</div></div><div class="bar-count">78</div></div>
-              <div class="bar-row"><div class="bar-label">Poste queimado</div><div class="bar-track"><div class="bar-fill" style="width:53%;background:var(--amarelo)">52</div></div><div class="bar-count">52</div></div>
-              <div class="bar-row"><div class="bar-label">Lixo irregular</div><div class="bar-track"><div class="bar-fill" style="width:42%;background:var(--verde)">41</div></div><div class="bar-count">41</div></div>
-              <div class="bar-row"><div class="bar-label">Den. Meio Amb.</div><div class="bar-track"><div class="bar-fill" style="width:37%;background:#e74c3c">36</div></div><div class="bar-count">36</div></div>
-              <div class="bar-row"><div class="bar-label">SUPLV</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:#9b59b6">24</div></div><div class="bar-count">24</div></div>
-              <div class="bar-row"><div class="bar-label">Reclamação geral</div><div class="bar-track"><div class="bar-fill" style="width:16%;background:#e67e22">16</div></div><div class="bar-count">16</div></div>
+            <div class="bar-section" id="dash-bar-cats">
+              <div style="text-align:center;color:#bbb;padding:20px">Carregando...</div>
             </div>
           </div>
         </div>
 
-        <div class="three-col">
-          <div class="sec-card" style="border-color:var(--azul);cursor:default">
-            <h4 style="color:var(--azul)"><span class="material-icons">construction</span> Sec. de Obras</h4>
-            <div class="big-num" style="color:var(--azul)">98</div>
-            <div class="sub-info">Pendentes: 18 · Resolvidas: 70</div>
-          </div>
-          <div class="sec-card" style="border-color:var(--amarelo);cursor:default">
-            <h4 style="color:#7d5a00"><span class="material-icons">local_shipping</span> SUPLV</h4>
-            <div class="big-num" style="color:var(--amarelo)">24</div>
-            <div class="sub-info">Pendentes: 6 · Resolvidas: 14</div>
-          </div>
-          <div class="sec-card" style="border-color:var(--verde);cursor:default">
-            <h4 style="color:var(--verde)"><span class="material-icons">eco</span> Meio Ambiente</h4>
-            <div class="big-num" style="color:var(--verde)">36</div>
-            <div class="sub-info">Pendentes: 12 · Resolvidas: 18</div>
-          </div>
+        <div class="three-col" id="dash-secretarias">
+          <div style="text-align:center;color:#bbb;padding:20px">Carregando...</div>
         </div>
       </div>
 
@@ -1054,15 +1031,83 @@ async function carregarDashboard(){
   try {
     store.dashboard = await api.get('/relatorios/dashboard');
     const d = store.dashboard;
-    document.getElementById('kpi-total')    && (document.getElementById('kpi-total').textContent = d.total ?? 0);
-    document.getElementById('kpi-analise')  && (document.getElementById('kpi-analise').textContent = d.em_analise ?? 0);
-    document.getElementById('kpi-exec')     && (document.getElementById('kpi-exec').textContent = d.em_execucao ?? 0);
-    document.getElementById('kpi-res')      && (document.getElementById('kpi-res').textContent = d.resolvidas ?? 0);
+
+    // KPIs
+    document.getElementById('kpi-total')   && (document.getElementById('kpi-total').textContent   = d.total ?? 0);
+    document.getElementById('kpi-analise') && (document.getElementById('kpi-analise').textContent = d.em_analise ?? 0);
+    document.getElementById('kpi-exec')    && (document.getElementById('kpi-exec').textContent    = d.em_execucao ?? 0);
+    document.getElementById('kpi-res')     && (document.getElementById('kpi-res').textContent     = d.resolvidas ?? 0);
+
+    // Notif strip
+    const strip = document.getElementById('notif-strip-dash');
+    const msg   = document.getElementById('notif-strip-msg');
+    if (strip && msg && d.em_analise > 0) {
+      msg.textContent = `${d.em_analise} ocorrência${d.em_analise>1?'s':''} aguardando análise.`;
+      strip.style.display = 'flex';
+    } else if (strip) {
+      strip.style.display = 'none';
+    }
+
+    // Últimas ocorrências
+    const ultimasBody = document.getElementById('dash-ultimas-tbody');
+    if (ultimasBody) {
+      const occs = await api.get('/ocorrencias?limit=5');
+      if (!occs || occs.length === 0) {
+        ultimasBody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="material-icons">inbox</span><p>Nenhuma ocorrência ainda</p></div></td></tr>`;
+      } else {
+        ultimasBody.innerHTML = occs.map(o => {
+          const catKey = (o.categoria_nome||'').toLowerCase().includes('buraco') ? 'buraco'
+                       : (o.categoria_nome||'').toLowerCase().includes('poste')  ? 'poste'
+                       : (o.categoria_nome||'').toLowerCase().includes('lixo')   ? 'lixo'
+                       : (o.categoria_nome||'').toLowerCase().includes('ambient')? 'denuncia'
+                       : 'reclamacao';
+          return `
+            <tr>
+              <td><strong>${o.protocolo}</strong></td>
+              <td><span class="cat cat-${catKey}">${o.categoria_nome||'—'}</span></td>
+              <td><span class="badge ${STATUS_CLASS[o.status]}">${STATUS_LABEL[o.status]}</span></td>
+              <td>${o.bairro||'—'}</td>
+              <td><button class="action-btn" onclick="openOccModal(${o.id},'view')"><span class="material-icons">visibility</span></button></td>
+            </tr>`;
+        }).join('');
+      }
+    }
+
+    // Barras por categoria
+    const barCats = document.getElementById('dash-bar-cats');
+    if (barCats && d.por_categoria && d.por_categoria.length > 0) {
+      const max = Math.max(...d.por_categoria.map(c => c.total), 1);
+      const cores = ['var(--azul)','var(--amarelo)','var(--verde)','#e74c3c','#9b59b6','#e67e22','#1abc9c'];
+      barCats.innerHTML = d.por_categoria.map((c, i) => `
+        <div class="bar-row">
+          <div class="bar-label">${c.nome}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(c.total/max*100)}%;background:${cores[i%cores.length]}">${c.total}</div></div>
+          <div class="bar-count">${c.total}</div>
+        </div>`).join('');
+    } else if (barCats) {
+      barCats.innerHTML = `<div class="empty-state"><span class="material-icons">bar_chart</span><p>Nenhum dado ainda</p></div>`;
+    }
+
+    // Cards por secretaria
+    const secDiv = document.getElementById('dash-secretarias');
+    if (secDiv) {
+      const porSec = await api.get('/relatorios/por-secretaria');
+      if (!porSec || porSec.length === 0) {
+        secDiv.innerHTML = `<div class="empty-state"><span class="material-icons">apartment</span><p>Nenhuma secretaria com ocorrências</p></div>`;
+      } else {
+        secDiv.innerHTML = porSec.slice(0,3).map(s => `
+          <div class="sec-card" style="border-color:${s.cor||'var(--azul)'};cursor:default">
+            <h4 style="color:${s.cor||'var(--azul)'}"><span class="material-icons">apartment</span> ${s.nome}</h4>
+            <div class="big-num" style="color:${s.cor||'var(--azul)'}">${s.total}</div>
+            <div class="sub-info">Pendentes: ${(s.em_analise||0)+(s.em_execucao||0)} · Resolvidas: ${s.resolvidas||0}</div>
+          </div>`).join('');
+      }
+    }
+
   } catch (err) {
     console.error('Dashboard:', err);
   }
 }
-
 // ─────────────────────────────────────────────────────────────
 //  OCORRÊNCIAS
 // ─────────────────────────────────────────────────────────────
