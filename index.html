@@ -1373,18 +1373,28 @@ async function saveUser(){
   const dados = {
     nome_completo: nome,
     email,
-    cpf: document.getElementById('u-cpf').value,
-    telefone: document.getElementById('u-tel').value,
-    cargo: document.getElementById('u-cargo').value,
+    cpf: document.getElementById('u-cpf').value.trim(),
+    telefone: document.getElementById('u-tel').value.trim(),
+    cargo: document.getElementById('u-cargo').value.trim(),
     perfil,
+    senha: editingUserId ? undefined : (document.getElementById('u-senha').value || 'ConectaImp@2026'),
   };
+
   if (perfil === 'secretaria') {
-    dados.secretaria_id = parseInt(document.getElementById('u-secretaria').value);
+    const secVal = document.getElementById('u-secretaria').value;
+    const secId = parseInt(secVal);
+    if (!secId || isNaN(secId)) {
+      showToast('Selecione uma secretaria válida.', 'erro');
+      return;
+    }
+    dados.secretaria_id = secId;
   }
+
+  // Remove campos undefined
+  Object.keys(dados).forEach(k => dados[k] === undefined && delete dados[k]);
 
   try {
     if (editingUserId) {
-      // Edição: PATCH (não envia cpf/email/perfil — só dados mutáveis)
       const ativo = document.getElementById('u-status').value === 'ativo';
       await api.patch(`/usuarios/${editingUserId}`, {
         nome_completo: nome,
@@ -1394,7 +1404,6 @@ async function saveUser(){
       });
       showToast('Usuário atualizado com sucesso!', 'sucesso');
     } else {
-      dados.senha = document.getElementById('u-senha').value || 'ConectaImp@2026';
       await api.post('/usuarios', dados);
       showToast('Usuário cadastrado com sucesso!', 'sucesso');
     }
